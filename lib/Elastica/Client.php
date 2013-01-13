@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Client to connect the the elasticsearch server
  *
@@ -217,7 +218,7 @@ class Elastica_Client
      * Update document, using update script. Requires elasticsearch >= 0.19.0
      *
      * @param  int                  $id      document id
-     * @param  array|Elastic_Script $data    raw data for request body
+     * @param  array|Elastic_Script|Elastic_Script $data    raw data for request body
      * @param  string               $index   index to update
      * @param  string               $type    type of index to update
      * @param  array                $options array of query params to use for query. For possible options check es api
@@ -227,18 +228,29 @@ class Elastica_Client
     public function updateDocument($id, $data, $index, $type, array $options = array())
     {
         $path =  $index . '/' . $type . '/' . $id . '/_update';
+
         if (!isset($options['retry_on_conflict'])) {
             $retryOnConflict = $this->getConfig("retryOnConflict");
             $options['retry_on_conflict'] = $retryOnConflict;
         }
 
         if ($data instanceof Elastica_Script) {
-            $data = $data->toArray();
+            $requestData = $data->toArray();
         } else if ($data instanceof Elastica_Document) {
-            $data = array('doc' => $data->getData());
+            if ($data->hasScript()) {
+                $requestData = $data->getScript()->toArray();
+                $documentData = $data->getData();
+                if (!empty($documentData)) {
+                    $requestData['upsert'] = $documentData;
+                }
+            } else {
+                $requestData = array('doc' => $data->getData());
+            }
+        } else {
+            $requestData = $data;
         }
 
-        return $this->request($path, Elastica_Request::POST, $data, $options);
+        return $this->request($path, Elastica_Request::POST, $requestData, $options);
     }
 
     /**
