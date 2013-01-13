@@ -48,6 +48,14 @@ class Elastica_TypeTest extends Elastica_Test
         $mapping->setSource(array('enabled' => false));
         $type->setMapping($mapping);
 
+        $mapping = $type->getMapping();
+
+        $this->assertArrayHasKey('user', $mapping);
+        $this->assertArrayHasKey('properties', $mapping['user']);
+        $this->assertArrayHasKey('id', $mapping['user']['properties']);
+        $this->assertArrayHasKey('type', $mapping['user']['properties']['id']);
+        $this->assertEquals('integer', $mapping['user']['properties']['id']['type']);
+
         // Adds 1 document to the index
         $doc1 = new Elastica_Document(1,
             array('username' => 'hans', 'test' => array('2', '3', '5'))
@@ -162,6 +170,18 @@ class Elastica_TypeTest extends Elastica_Test
         $type->getDocument(1);
 
         $type->getDocument(2);
+    }
+
+    /**
+     * @expectedException Elastica_Exception_NotFound
+     */
+    public function testGetDocumentNotExistingIndex()
+    {
+        $client = new Elastica_Client();
+        $index = new Elastica_Index($client, 'index');
+        $type = new Elastica_Type($index, 'type');
+
+        $document = $type->getDocument(1);
     }
 
     public function testDeleteByQuery()
@@ -320,5 +340,27 @@ class Elastica_TypeTest extends Elastica_Test
 
         $doc = $type->getDocument($hashId);
         $this->assertEquals($hashId, $doc->getId());
+    }
+
+    public function testSetTypeAndIndex()
+    {
+        $document = new Elastica_Document();
+        $document->setType('type');
+
+        $this->assertEquals('type', $document->getType());
+
+        $index = new Elastica_Index($this->_getClient(), 'index');
+        $type = $index->getType('type');
+
+        $document = new Elastica_Document();
+        $document->setIndex('index2');
+        $this->assertEquals('index2', $document->getIndex());
+
+        $document->setType($type);
+
+        $this->assertEquals('index', $document->getIndex());
+        $this->assertEquals('type', $document->getType());
+
+        $this->assertEquals('type', $type->getType());
     }
 }
