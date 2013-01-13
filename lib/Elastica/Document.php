@@ -195,6 +195,10 @@ class Elastica_Document extends Elastica_Param
      */
     public function setType($type)
     {
+        if ($type instanceof Elastica_Type) {
+            $this->setIndex($type->getIndex());
+            $type = $type->getName();
+        }
         return $this->setParam('_type', $type);
     }
 
@@ -217,6 +221,9 @@ class Elastica_Document extends Elastica_Param
      */
     public function setIndex($index)
     {
+        if ($index instanceof Elastica_Index) {
+            $index = $index->getName();
+        }
         return $this->setParam('_index', $index);
     }
 
