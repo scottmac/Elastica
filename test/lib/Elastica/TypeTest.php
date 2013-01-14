@@ -249,6 +249,8 @@ class Elastica_TypeTest extends Elastica_Test
 
     /**
      * Test Delete of index type.  After delete will check for type mapping.
+     * @expectedException Elastica_Exception_Response
+     * @expectedExceptionMessage TypeMissingException[[elastica_test] type[test] missing]
      */
     public function testDeleteType()
     {
@@ -259,15 +261,7 @@ class Elastica_TypeTest extends Elastica_Test
         $index->refresh();
 
         $type->delete();
-        try {
-            $type->getMapping();
-        } catch (Elastica_Exception_Response $expected) {
-            $this->assertEquals("TypeMissingException[[elastica_test] type[test] missing]", $expected->getMessage());
-
-            return;
-        }
-
-        $this->fail('Mapping for type[test] in [elastica_test] still exists');
+        $type->getMapping();
     }
 
     public function testMoreLikeThisApi()
