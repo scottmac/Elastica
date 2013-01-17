@@ -479,7 +479,7 @@ class Elastica_Query_Builder extends Elastica_Query_Abstract
     }
 
     /**
-     * Add a greater than or equal to (lt) clause.
+     * Add a greater than or equal to (gte) clause.
      *
      * Used in range blocks.
      *
