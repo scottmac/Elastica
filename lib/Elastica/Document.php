@@ -79,6 +79,14 @@ class Elastica_Document extends Elastica_Param
     }
 
     /**
+     * @return bool
+     */
+    public function hasId()
+    {
+        return '' !== (string) $this->getId();
+    }
+
+    /**
      * Adds the given key/value pair to the document
      *
      * @param  string            $key   Document entry key

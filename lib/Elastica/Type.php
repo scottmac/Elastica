@@ -95,7 +95,7 @@ class Elastica_Type implements Elastica_Searchable
      */
     public function updateDocument(Elastica_Document $document, array $options = array())
     {
-        if (null === $document->getId()) {
+        if (!$document->hasId()) {
             throw new Elastica_Exception_Invalid('Document id is not set');
         }
         return $this->getIndex()->getClient()->updateDocument(
