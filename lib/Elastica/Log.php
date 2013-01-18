@@ -41,7 +41,7 @@ class Elastica_Log
     public function log($message)
     {
         if ($message instanceof Elastica_Request) {
-            $message = $this->_convertRequest($message);
+            $message = $message->toString();
         }
 
         $this->_lastMessage = $message;
@@ -65,33 +65,6 @@ class Elastica_Log
         $this->_log = $log;
 
         return $this;
-    }
-
-    /**
-     * Converts a request to a log message
-     *
-     * @param  Elastica_Request $request
-     * @return string           Request log message
-     */
-    protected function _convertRequest(Elastica_Request $request)
-    {
-        $message = 'curl -X' . strtoupper($request->getMethod()) . ' ';
-        $message .= '\'http://' . $request->getConnection()->getHost() . ':' . $request->getConnection()->getPort() . '/';
-        $message .= $request->getPath();
-
-        $query = $request->getQuery();
-        if (!empty($query)) {
-            $message .= '?' . http_build_query($query);
-        }
-
-        $message .= '\'';
-
-        $data = $request->getData();
-        if (!empty($data)) {
-            $message .= ' -d \'' . json_encode($data) . '\'';
-        }
-
-        return $message;
     }
 
     /**
