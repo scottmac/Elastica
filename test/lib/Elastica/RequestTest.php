@@ -55,12 +55,29 @@ class Elastica_RequestTest extends Elastica_Test
 
         $request = new Elastica_Request($path, $method, $data, $query, $connection);
 
+        $data = $request->toArray();
+
+        $this->assertInternalType('array', $data);
+        $this->assertArrayHasKey('method', $data);
+        $this->assertArrayHasKey('path', $data);
+        $this->assertArrayHasKey('query', $data);
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('connection', $data);
+        $this->assertEquals($request->getMethod(), $data['method']);
+        $this->assertEquals($request->getPath(), $data['path']);
+        $this->assertEquals($request->getQuery(), $data['query']);
+        $this->assertEquals($request->getData(), $data['data']);
+        $this->assertInternalType('array', $data['connection']);
+        $this->assertArrayHasKey('host', $data['connection']);
+        $this->assertArrayHasKey('port', $data['connection']);
+        $this->assertEquals($request->getConnection()->getHost(), $data['connection']['host']);
+        $this->assertEquals($request->getConnection()->getPort(), $data['connection']['port']);
+
         $string = $request->toString();
 
-        $expected = 'curl -XPOST \'http://localhost:9200/test?no=params\' -d \'{"key":"value"}\'';
-        $this->assertEquals($expected, $string);
+        $this->assertInternalType('string', $string);
 
         $string = (string) $request;
-        $this->assertEquals($expected, $string);
+        $this->assertInternalType('string', $string);
     }
 }
