@@ -28,7 +28,7 @@ class Elastica_Type implements Elastica_Searchable
     protected $_name = '';
 
     /**
-     * @var array|string
+     * @var array|string A callable that serializes an object passed to it
      */
     protected $_serializer;
 
@@ -373,7 +373,7 @@ class Elastica_Type implements Elastica_Searchable
      * Sets the serializer callable used in addObject
      * @see Elastica_Type::addObject
      *
-     * @param array|string $serializer, a callable that serializes an object passed to it
+     * @param array|string $serializer  @see Elastica_Type::_serializer
      */
     public function setSerializer($serializer)
     {
