@@ -113,4 +113,51 @@ class Elastica_Util
 
         return $string;
     }
+
+    /**
+     * Tries to guess the name of the param, based on its class
+     * Exemple: Elastica_Filter_HasChildFilter => has_child
+     *
+     * @param string|object Class or Class name
+     * @return string parameter name
+     */
+    public static function getParamName($class)
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
+        $parts = explode('_', $class);
+        $last  = array_pop($parts);
+        $last  = preg_replace('/(Facet|Query|Filter)$/', '', $last);
+        $name  = self::toSnakeCase($last);
+
+        return $name;
+    }
+
+    /**
+     * Converts Request to Curl console command
+     *
+     * @param Request $request
+     * @return string
+     */
+    public static function convertRequestToCurlCommand(Request $request)
+    {
+        $message = 'curl -X' . strtoupper($request->getMethod()) . ' ';
+        $message .= '\'http://' . $request->getConnection()->getHost() . ':' . $request->getConnection()->getPort() . '/';
+        $message .= $request->getPath();
+
+        $query = $request->getQuery();
+        if (!empty($query)) {
+            $message .= '?' . http_build_query($query);
+        }
+
+        $message .= '\'';
+
+        $data = $request->getData();
+        if (!empty($data)) {
+            $message .= ' -d \'' . json_encode($data) . '\'';
+        }
+        return $message;
+    }
 }

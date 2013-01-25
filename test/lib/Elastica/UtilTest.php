@@ -48,4 +48,24 @@ class Elastica_UtilTest extends PHPUnit_Framework_TestCase
         $string = 'HowAreYouToday';
         $this->assertEquals('how_are_you_today', Elastica_Util::toSnakeCase($string));
     }
+
+    public function testConvertRequestToCurlCommand()
+    {
+        $path = 'test';
+        $method = Request::POST;
+        $query = array('no' => 'params');
+        $data = array('key' => 'value');
+
+        $connection = new Elastica_Connection();
+        $connection->setHost('localhost');
+        $connection->setPort('9200');
+
+        $request = new Request($path, $method, $data, $query, $connection);
+
+        $curlCommand = Util::convertRequestToCurlCommand($request);
+
+        $expected = 'curl -XPOST \'http://localhost:9200/test?no=params\' -d \'{"key":"value"}\'';
+        $this->assertEquals($expected, $curlCommand);
+
+    }
 }
