@@ -111,7 +111,7 @@ class Elastica_Transport_Http extends Elastica_Transport_Abstract
         }
 
         if ($response->hasError()) {
-            throw new Elastica_Exception_Response($response);
+            throw new Elastica_Exception_Response($request, $response);
         }
 
         if ($errorNumber > 0) {

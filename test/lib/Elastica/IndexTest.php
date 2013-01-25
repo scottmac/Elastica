@@ -392,6 +392,8 @@ class Elastica_IndexTest extends Elastica_Test
         } catch (Elastica_Exception_Response $error) {
             $response = $error->getResponse();
             $this->assertTrue($response->hasError());
+            $request = $error->getRequest();
+            $this->assertInstanceOf('Elastica_Request', $request);
         }
     }
 

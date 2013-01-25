@@ -60,7 +60,7 @@ class Elastica_Transport_Memcache extends Elastica_Transport_Abstract
         $response = new Elastica_Response($responseString);
 
         if ($response->hasError()) {
-            throw new Elastica_Exception_Response($response);
+            throw new Elastica_Exception_Response($request, $response);
         }
 
         return $response;
