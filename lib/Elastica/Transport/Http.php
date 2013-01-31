@@ -32,6 +32,7 @@ class Elastica_Transport_Http extends Elastica_Transport_Abstract
      * @throws Elastica_Exception_Response
      * @throws Elastica_Exception_Invalid
      * @throws Elastica_Exception_Client
+     * @throws Elastica_Exception_Http
      * @return Elastica_Response Response object
      */
     public function exec(Elastica_Request $request, array $params)
@@ -115,7 +116,7 @@ class Elastica_Transport_Http extends Elastica_Transport_Abstract
         }
 
         if ($errorNumber > 0) {
-            throw new Elastica_Exception_Connection($errorNumber, $request, $response);
+            throw new Elastica_Exception_Http($errorNumber, $request, $response);
         }
 
         return $response;

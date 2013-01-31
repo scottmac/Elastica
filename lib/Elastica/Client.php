@@ -460,7 +460,7 @@ class Elastica_Client
         } catch (Elastica_Exception_Connection $e) {
             $connection->setEnabled(false);
 
-            // Calls callback with connection as param to make it possible to persist invalid conenctions
+            // Calls callback with connection as param to make it possible to persist invalid connections
             if ($this->_callback) {
                 call_user_func($this->_callback, $connection);
             }
